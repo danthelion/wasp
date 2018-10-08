@@ -1,6 +1,5 @@
 import logging
 import subprocess
-from pathlib import Path
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -12,15 +11,6 @@ class AppleScript:
 
     def __repr__(self):
         return f'AppleScript({self.script_txt})'
-
-    @classmethod
-    def from_file(cls, script_path: Path):
-        with script_path.open(mode='r') as f:
-            return cls(script_txt=f.read())
-
-    @classmethod
-    def from_string(cls, script_string: str):
-        return cls(script_txt=script_string)
 
     def run(self):
         logger.debug(f'Running: {self}')

@@ -1,105 +1,135 @@
+import json
 import logging
-from pathlib import Path
 
 from wasp.utils.applescript import AppleScript
+from wasp.utils.applescripts import *
+from wasp.utils.lib import WaspLib
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-APPLESCRIPTS_DIR = Path(__file__).parent / 'utils' / 'applescripts'
-
-
-class WaspException(Exception):
-    pass
-
 
 class SpotifySystemController:
     def __init__(self):
-        self.is_spotify_running: bool = False
-        self.check_if_spotify_is_running()
+        self.state = None
 
-    def check_if_spotify_is_running(self):
-        apple_script = AppleScript.from_file(script_path=APPLESCRIPTS_DIR / 'check_if_spotify_is_running.scpt')
-        self.is_spotify_running = True if apple_script.run() == "1" else False
+    @WaspLib.warn_if_not_running
+    def load_player_state(self):
+        apple_script = AppleScript(script_txt=GET_PLAYER_STATE)
+        self.state = json.loads(apple_script.run())
 
-    def start_spotify(self):
-        apple_script = AppleScript.from_file(script_path=APPLESCRIPTS_DIR / 'start_spotify.scpt')
-        if not self.is_spotify_running:
-            res = apple_script.run()
-            self.is_spotify_running = True
-            return res
+    @staticmethod
+    def start_spotify():
+        apple_script = AppleScript(script_txt=START_SPOTIFY)
+        return apple_script.run()
 
-    def stop_spotify(self):
-        apple_script = AppleScript.from_file(script_path=APPLESCRIPTS_DIR / 'stop_spotify.scpt')
-        if self.is_spotify_running:
-            res = apple_script.run()
-            self.is_spotify_running = False
-            return res
+    @staticmethod
+    @WaspLib.warn_if_not_running
+    def quit_spotify():
+        apple_script = AppleScript(script_txt=QUIT_SPOTIFY)
+        return apple_script.run()
+
+    @staticmethod
+    @WaspLib.warn_if_not_running
+    def next_track():
+        apple_script = AppleScript(script_txt=NEXT_TRACK)
+        return apple_script.run()
+
+    @staticmethod
+    @WaspLib.warn_if_not_running
+    def previous_track():
+        apple_script = AppleScript(script_txt=PREVIOUS_TRACK)
+        return apple_script.run()
+
+    @staticmethod
+    @WaspLib.warn_if_not_running
+    def play():
+        apple_script = AppleScript(script_txt=PLAY)
+        return apple_script.run()
+
+    @staticmethod
+    @WaspLib.warn_if_not_running
+    def pause():
+        apple_script = AppleScript(script_txt=PAUSE)
+        return apple_script.run()
+
+    @staticmethod
+    @WaspLib.warn_if_not_running
+    def play_track(spotify_uri: str):
+        apple_script = AppleScript(script_txt=PLAY_TRACK.format(spotify_uri=spotify_uri))
+        return apple_script.run()
+
+    @staticmethod
+    @WaspLib.warn_if_not_running
+    def volume_up():
+        apple_script = AppleScript(script_txt=PLAY_TRACK.format(spotify_uri=VOLUME_UP))
+        return apple_script.run()
+
+    @staticmethod
+    @WaspLib.warn_if_not_running
+    def volume_down():
+        apple_script = AppleScript(script_txt=PLAY_TRACK.format(spotify_uri=VOLUME_DOWN))
+        return apple_script.run()
 
 
-class WaspSong:
+class WaspTrack:
     def __init__(self):
-        self.track_name = None
+        self.metadata = None
 
     def __repr__(self):
-        return f'Song({self.track_name})'
+        return f'Track({self.metadata})'
 
-    def get_track_name(self):
-        apple_script = AppleScript.from_file(script_path=APPLESCRIPTS_DIR / 'get_current_track_name.scpt')
-        self.track_name = apple_script.run()
-        return self.track_name
-
-
-class WaspArtist:
-    def __init__(self):
-        self.artist_name = None
-
-    def __repr__(self):
-        return f'Artist({self.artist_name})'
-
-    def get_artist_name(self):
-        apple_script = AppleScript.from_file(script_path=APPLESCRIPTS_DIR / 'get_current_artist_name.scpt')
-        self.artist_name = apple_script.run()
-        return self.artist_name
+    def load_track_metadata(self):
+        apple_script = AppleScript(script_txt=GET_TRACK_METADATA)
+        self.metadata = json.loads(apple_script.run())
 
 
 class Wasp:
     def __init__(self):
         self.spotify_controller: SpotifySystemController = SpotifySystemController()
-        self.current_track: WaspSong = WaspSong()
-        self.current_artist: WaspArtist = WaspArtist()
+        self.track: WaspTrack = WaspTrack()
 
     def __repr__(self):
-        return f'Wasp(Artist: {self.current_artist} Track: {self.current_track})'
+        return f'Wasp(Track: {self.track})'
 
     def start_spotify(self):
         return self.spotify_controller.start_spotify()
 
-    def stop_spotify(self):
-        return self.spotify_controller.stop_spotify()
+    def quit_spotify(self):
+        return self.spotify_controller.quit_spotify()
 
-    def is_spotify_running(self):
-        return self.spotify_controller.is_spotify_running
+    def next_track(self):
+        """
+        Play the next track and refresh metadata.
+        """
+        self.spotify_controller.next_track()
+        self.get_track()
 
-    def _warn_if_not_running(self):
-        if not self.is_spotify_running():
-            raise WaspException('Spotify is not running!')
+    def previous_track(self):
+        """
+        Play the previous track and refresh metadata.
+        """
+        self.spotify_controller.previous_track()
+        self.get_track()
 
-    def load_track_metadata(self):
-        self.get_current_track_name()
+    def play(self):
+        self.spotify_controller.play()
 
-    def load_artist_metadata(self):
-        self.get_current_artist_name()
+    def pause(self):
+        self.spotify_controller.pause()
 
-    def get_current_track_name(self):
-        self._warn_if_not_running()
-        return self.current_track.get_track_name()
+    def play_track(self, spotify_uri: str):
+        self.spotify_controller.play_track(spotify_uri=spotify_uri)
+        self.get_track()
 
-    def get_current_artist_name(self):
-        self._warn_if_not_running()
-        return self.current_artist.get_artist_name()
+    def volume_up(self):
+        self.spotify_controller.volume_up()
 
-    def poll(self):
-        # TODO threading, wait for all.
-        self.load_track_metadata()
-        self.load_artist_metadata()
+    def volume_down(self):
+        self.spotify_controller.volume_down()
+
+    def get_track(self):
+        self.track.load_track_metadata()
+
+    def get_state(self):
+        self.spotify_controller.load_player_state()
