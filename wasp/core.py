@@ -79,6 +79,7 @@ class WaspTrack:
     def __repr__(self):
         return f'Track({self.metadata})'
 
+    @WaspLib.warn_if_not_running
     def load_track_metadata(self):
         apple_script = AppleScript(script_txt=GET_TRACK_METADATA)
         self.metadata = json.loads(apple_script.run())

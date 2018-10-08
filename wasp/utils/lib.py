@@ -15,7 +15,7 @@ class WaspLib:
     @staticmethod
     def warn_if_not_running(func):
         def wrapper(*args, **kwargs):
-            if not WaspLib.check_if_spotify_is_running:
+            if not WaspLib.check_if_spotify_is_running():
                 raise WaspException('Spotify is not running!')
             func(*args, **kwargs)
 
