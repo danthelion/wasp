@@ -1,4 +1,4 @@
-from wasp.utils import applescript
+from wasp_spotify_bindings.utils import applescript
 
 example_apple_script = """
 set one to 1

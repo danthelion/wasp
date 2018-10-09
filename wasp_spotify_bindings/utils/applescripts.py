@@ -1,8 +1,8 @@
 CHECK_IF_SPOTIFY_IS_RUNNING = """
 if application "Spotify" is running then
-    return "1"
+    return "running"
 else
-    return "0"
+    return "1"
 end if
 """
 
@@ -18,6 +18,56 @@ tell application "Spotify"
 end tell
 """
 
+JUMP_TO = """
+tell application "Spotify"
+    set player position to {jump_to_second}
+end tell
+"""
+
+IS_REPEATING = """
+tell application "Spotify"
+    return repeating
+end tell
+"""
+
+IS_SHUFFLING = """
+tell application "Spotify"
+    return shuffling
+end tell
+"""
+
+SET_REPEATING = """
+tell application "Spotify"
+    set repeating to {set_repeating}
+end tell
+"""
+
+TOGGLE_REPEATING = """
+tell application "Spotify"
+    if repeating then
+        set repeating to false
+    else
+        set repeating to true
+    end if
+end tell
+"""
+
+SET_SHUFFLING = """
+tell application "Spotify"
+    set shuffling to {set_shuffling}
+end tell
+"""
+
+TOGGLE_SHUFFLING = """
+tell application "Spotify"
+    if shuffling then
+        set shuffling to false
+    else
+        set shuffling to true
+    end if
+end tell
+"""
+
 NEXT_TRACK = """
 tell application "Spotify"
     next track
@@ -27,6 +77,12 @@ end tell
 PREVIOUS_TRACK = """
 tell application "Spotify"
     previous track
+end tell
+"""
+
+SET_VOLUME = """
+tell application "Spotify"
+    set sound volume to {volume}
 end tell
 """
 
@@ -42,9 +98,21 @@ tell application "Spotify"
 end tell
 """
 
+PLAY_PAUSE = """
+tell application "Spotify"
+    play pause
+end tell
+"""
+
 PLAY_TRACK = """
 tell application "Spotify"
     play track "{spotify_uri}"
+end tell
+"""
+
+PLAY_TRACK_IN_CONTEXT = """
+tell application "Spotify"
+    play track "{spotify_uri}" in context {context}
 end tell
 """
 
