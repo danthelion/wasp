@@ -1,8 +1,11 @@
 # WASP
-Wrapper around AppleScript of Spotify in Python
+Wrapper around AppleScript of Spotify in Python.
 
 This library provides a simple wrapper around the AppleScript API
 of the Spotify application on MacOS.
+
+
+Developed and tested with Python 3.7
 
 ## Install
 ```bash
