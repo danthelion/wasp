@@ -62,13 +62,13 @@ class SpotifySystemController:
     @staticmethod
     @WaspLib.warn_if_not_running
     def volume_up():
-        apple_script = AppleScript(script_txt=PLAY_TRACK.format(spotify_uri=VOLUME_UP))
+        apple_script = AppleScript(script_txt=VOLUME_UP)
         return apple_script.run()
 
     @staticmethod
     @WaspLib.warn_if_not_running
     def volume_down():
-        apple_script = AppleScript(script_txt=PLAY_TRACK.format(spotify_uri=VOLUME_DOWN))
+        apple_script = AppleScript(script_txt=VOLUME_DOWN)
         return apple_script.run()
 
 
