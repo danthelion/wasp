@@ -19,8 +19,9 @@ setup(
     classifiers=[
         'Development Status :: 3 - Beta',
         'Intended Audience :: Developers',
-        'License :: MIT License',
-        'Programming Language :: Python :: 3.7',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3'
+        'Operating System :: MacOS',
     ],
     keywords='spotify api',
     packages=find_packages(),
