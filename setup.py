@@ -17,7 +17,6 @@ setup(
     author='Daniel Palma',
     author_email='danivgy@gmail.com',
     classifiers=[
-        'Development Status :: 3 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3'
