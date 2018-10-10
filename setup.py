@@ -16,12 +16,6 @@ setup(
     url='https://github.com/danthelion/wasp',
     author='Daniel Palma',
     author_email='danivgy@gmail.com',
-    classifiers=[
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3'
-        'Operating System :: MacOS',
-    ],
     keywords='spotify api',
     packages=find_packages(),
     include_package_data=True,
